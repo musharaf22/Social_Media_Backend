@@ -89,11 +89,11 @@ const friendRequest = async (req: Request, res: Response) => {
     const user1 = await User.findByIdAndUpdate(req.params.id, {
       friendReq: [friendRequest],
     });
-    user1 && console.log("User 1 get Successfully");
+
     const user2 = await User.findByIdAndUpdate(id, {
       friendRes: [req.body.friendRequest],
     });
-    user2 && console.log("User 2 get Successfully");
+
     if (user1 && user2) {
       return res.status(200).json({
         error: false,
