@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   address: { type: String, required: true },
   image: [{ type: String }],
   coverImage: { type: String },
-  friends: [{ type: String }],
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
 const User = mongoose.model("User", userSchema);
