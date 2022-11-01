@@ -6,7 +6,7 @@ const createUser = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email: email });
-    const password = hashPassword(req.body.password as string);
+    const password = await hashPassword(req.body.password as string);
     if (password) {
       req.body.password = password;
     }
@@ -77,11 +77,40 @@ const updateUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: true, message: err.message });
   }
 };
+
+const friendRequest = async (req: Request, res: Response) => {
+  try {
+    const { id, friendRequest } = req.body;
+    if (req.body.id === req.params.id) {
+      return res
+        .status(404)
+        .json({ error: true, message: "Cant send Friend Req to Self" });
+    }
+    const user1 = await User.findByIdAndUpdate(req.params.id, {
+      friendReq: [friendRequest],
+    });
+    user1 && console.log("User 1 get Successfully");
+    const user2 = await User.findByIdAndUpdate(id, {
+      friendRes: [req.body.friendRequest],
+    });
+    user2 && console.log("User 2 get Successfully");
+    if (user1 && user2) {
+      return res.status(200).json({
+        error: false,
+        message: "Friend Request has been sent to another",
+      });
+    }
+    res.status(500).json({ error: true, message: "Something went wrong" });
+  } catch (err: any) {
+    res.status(500).json({ error: true, message: err.message });
+  }
+};
 const userController = {
   createUser,
   deleteUser,
   getAllUsers,
   updateUser,
+  friendRequest,
 };
 
 export default userController;

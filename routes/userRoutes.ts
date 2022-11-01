@@ -6,5 +6,6 @@ router.post("/", userController.createUser);
 router.delete("/:id", userController.deleteUser);
 router.get("/", userController.getAllUsers);
 router.put("/:id", userController.updateUser);
+router.patch("/:id", userController.friendRequest);
 
 export default router;
