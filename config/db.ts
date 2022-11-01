@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 const connDb = async () => {
   try {
     const connect = await mongoose.connect(
-      "mongodb://localhost:27017/socialMedia"
+      process.env.MONGO_URI
+        ? process.env.MONGO_URI
+        : "mongodb://localhost:27017/socialMedia"
     );
     if (connect) {
       console.log("Mongo Db IS Connected to", connect.connections[0].host);
