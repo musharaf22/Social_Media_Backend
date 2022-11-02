@@ -45,7 +45,7 @@ const updateUserProfile = async (req: any, res: Response) => {
   try {
     const id = req.user;
     const user = await User.findOne({ _id: id });
-    if (req.body.oldPassword && user) {
+    if ((req.body.oldPassword || req.body.password) && user) {
       const verifiedPassword = await comparePassword(
         req.body.oldPassword,
         user.password as string
@@ -57,20 +57,16 @@ const updateUserProfile = async (req: any, res: Response) => {
           .status(403)
           .json({ error: true, message: "Password Doesnot Matches" });
       }
-    } else {
-      return res
-        .status(404)
-        .json({ error: true, message: "Please Login Yourself" });
     }
     if (user) {
-      const updatexUser = await User.findByIdAndUpdate(id, { ...req.body });
-      return res
-        .status(200)
-        .json({
-          error: false,
-          message: "Profile Updayed Successfully",
-          data: updatexUser,
-        });
+      const updatexUser = await User.findByIdAndUpdate(id, {
+        ...req.body,
+      }).select("-password");
+      return res.status(200).json({
+        error: false,
+        message: "Profile Updated Successfully",
+        data: updatexUser,
+      });
     }
     res
       .status(500)
