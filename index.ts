@@ -11,7 +11,7 @@ app.use(morgan("combined"));
 dotenv.config();
 connDb();
 app.use("/api/v1", routes);
-app.get("/", (_req: Request, res: Response) => {
+app.get("/", (_, res: Response) => {
   res.send("<h1>Server Is Running On Prot 8080</h2>");
 });
 app.listen(process.env.PORT, () => {

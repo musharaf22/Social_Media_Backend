@@ -24,7 +24,7 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-const getUserProfile = async (req: Request, res: Response) => {
+const getUserProfile = async (req: any, res: Response) => {
   try {
     const id = req.user;
     const user = await User.findOne({ _id: id }).select("-password");
@@ -41,7 +41,7 @@ const getUserProfile = async (req: Request, res: Response) => {
   }
 };
 
-const updateUserProfile = async (req: Request, res: Response) => {
+const updateUserProfile = async (req: any, res: Response) => {
   try {
     const id = req.user;
     const user = await User.findOne({ _id: id });

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Post from "../models/postModel";
 
-const createPost = async (req: Request, res: Response) => {
+const createPost = async (req: any, res: Response) => {
   try {
     const id = req.user;
     const newPost = await Post.create({ userId: id, ...req.body });
