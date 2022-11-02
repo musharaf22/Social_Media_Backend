@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post("/", [authUser], postController.createPost);
 router.put("/like", [authUser], postController.updateLikes);
+router.put("/comment", [authUser], postController.addComment);
 
 export default router;
