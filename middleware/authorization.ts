@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-const authUser = (req: any, res: Response, next: NextFunction) => {
+declare module "express" {
+  interface Request {
+    user: string;
+  }
+}
+const authUser = (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     const decoded: any = jwt.verify(
