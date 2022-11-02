@@ -24,8 +24,25 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
+const getUserProfile = async (req: any, res: Response) => {
+  try {
+    const id = req.user;
+    const user = await User.findOne({ _id: id }).select("-password");
+    if (user) {
+      return res.status(200).json({
+        error: false,
+        message: "User Profile retrieved Successfully",
+        data: user,
+      });
+    }
+    res.status(404).json({ error: true, message: "No Such User Found" });
+  } catch (err: any) {
+    res.status(500).json({ error: true, message: err.message });
+  }
+};
 const authController = {
   login,
+  getUserProfile,
 };
 
 export default authController;
