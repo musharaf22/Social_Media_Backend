@@ -69,10 +69,39 @@ const addComment = async (req: any, res: Response) => {
     res.status(500).json({ error: true, message: err.message });
   }
 };
+
+const sharePost = async (req: any, res: Response) => {
+  try {
+    const id = req.user;
+    const post = await Post.findById(req.body.id);
+    if (post) {
+      const updatedPost = await Post.findByIdAndUpdate(req.body.id, {
+        share: { count: 1, userId: id },
+      });
+      if (updatedPost) {
+        return res.status(200).json({
+          error: false,
+          message: "Your have Shared Post Successfully",
+          data: post,
+        });
+      } else {
+        return res
+          .status(404)
+          .json({ error: true, message: "Something went wrong" });
+      }
+    }
+    res
+      .status(500)
+      .json({ error: true, message: "Something went wrong try later" });
+  } catch (err: any) {
+    res.status(500).json({ error: true, message: err.message });
+  }
+};
 const postController = {
   createPost,
   updateLikes,
   addComment,
+  sharePost,
 };
 
 export default postController;
