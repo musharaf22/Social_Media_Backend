@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/userModel";
-import { comparePassword } from "../utils/hashPassword";
+import { comparePassword, hashPassword } from "../utils/hashPassword";
 import tokentGenerate from "../utils/tokenGenerate";
 
 const login = async (req: Request, res: Response) => {
@@ -40,9 +40,49 @@ const getUserProfile = async (req: any, res: Response) => {
     res.status(500).json({ error: true, message: err.message });
   }
 };
+
+const updateUserProfile = async (req: any, res: Response) => {
+  try {
+    const id = req.user;
+    const user = await User.findOne({ _id: id });
+    if (req.body.oldPassword && user) {
+      const verifiedPassword = await comparePassword(
+        req.body.oldPassword,
+        user.password as string
+      );
+      if (verifiedPassword) {
+        req.body.password = await hashPassword(req.body.password as string);
+      } else {
+        return res
+          .status(403)
+          .json({ error: true, message: "Password Doesnot Matches" });
+      }
+    } else {
+      return res
+        .status(404)
+        .json({ error: true, message: "Please Login Yourself" });
+    }
+    if (user) {
+      const updatexUser = await User.findByIdAndUpdate(id, { ...req.body });
+      return res
+        .status(200)
+        .json({
+          error: false,
+          message: "Profile Updayed Successfully",
+          data: updatexUser,
+        });
+    }
+    res
+      .status(500)
+      .json({ error: true, message: "Something went wrong please try later" });
+  } catch (err: any) {
+    res.status(500).json({ error: true, message: err.message });
+  }
+};
 const authController = {
   login,
   getUserProfile,
+  updateUserProfile,
 };
 
 export default authController;
