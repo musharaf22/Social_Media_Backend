@@ -18,7 +18,7 @@ const login = async (req: Request, res: Response) => {
           .status(200)
           .json({ err: false, message: "User Logged in successfully", token });
       }
-      res
+      return res
         .status(404)
         .json({ error: true, message: "Invalid Email and Password" });
     }
@@ -39,6 +39,8 @@ const getUserProfile = async (req: any, res: Response) => {
         error: false,
         message: "User Profile retrieved Successfully",
         data: user,
+        totalFriends: user.friends.length,
+        totalReq: user.friendRes.length,
       });
     }
     res.status(404).json({ error: true, message: "No Such User Found" });
